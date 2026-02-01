@@ -8,19 +8,42 @@ void Print(vector<int>ans)
     cout<<'\n';
 }
 
-void MergeSort(vector<int>&nums)
+vector<int>MergeSort(vector<int>nums)
 {
+    if(nums.size() <= 1) return nums;
+    int mid = nums.size()/2;
 
+    vector<int>first;
+    vector<int>second;
 
-    for(int i = 1; i < nums.size(); i++) {
-        int key = nums[i];
-        int j = i-1;
-        while(j >= 0 && nums[j] > key) {
-            nums[j+1] = nums[j];
-            j--;
+    for(int i = 0; i < mid; i++)first.push_back(nums[i]);
+    for(int i = mid; i < nums.size(); i++)second.push_back(nums[i]);
+
+    vector<int>sortedFirst = MergeSort(first);
+    vector<int>sortedSecond = MergeSort(second);
+
+    int l=0, r=0;
+    vector<int>ans;
+
+    for(int i = 0; i < nums.size(); i++) {
+        if(l == sortedFirst.size()) {
+            ans.push_back(sortedSecond[r]);
+            r++;
         }
-        nums[j+1] = key;
+        else if(r == sortedSecond.size()) {
+            ans.push_back(sortedFirst[l]);
+            l++;
+        }
+        else if(sortedFirst[l]<=sortedSecond[r]) {
+            ans.push_back(sortedFirst[l]);
+            l++;
+        }
+        else {
+            ans.push_back(sortedSecond[r]);
+            r++;
+        }
     }
+    return ans;
 }
 
 int main()
@@ -29,9 +52,9 @@ int main()
     vector<int>nums(n);
     for(int i = 0; i < n; i++) cin >> nums[i];
 
-    InsertionSort(nums);
+    vector<int>ans= MergeSort(nums);
 
-    Print(nums);
+    Print(ans);
 }
 
 
